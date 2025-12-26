@@ -1,20 +1,25 @@
 name: tomcat server setup
+
 on:
   push:
     branches:
-      - main 
+      - main
+
 jobs:
   deploy:
     runs-on: ubuntu-latest
     steps:
       - name: Repo checkout
-        uses: action/checkout@v4
+        uses: actions/checkout@v4
+
       - name: Building War File
         run: mvn clean package
+
       - name: Deploy to tomcat
-        run: | 
-              WAR_FILE=$(ls target/*.war | head -n 1)
-              APP_NAME=Chai-Kafe
-              curl -u "${{ secrets.TOMCAT_USERNAME }}:${{ secrets.TOMCAT_PASSWORD }}" \
-                --upload-file "$WAR_FILE" \
-                "http://${{ secrets.TOMCAT_HOST }}:8080/manager/text/deploy?path=/$APP_NAME&update=true"
+        run: |
+          WAR_FILE=$(ls target/*.war | head -n 1)
+          APP_NAME=Chai-Kafe
+          curl -u tomcat:tomcat \
+            --upload-file "$WAR_FILE" \
+            "http://44.192.10.23:8080/manager/text/deploy?path=/$APP_NAME&update=true"
+
